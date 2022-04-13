@@ -110,7 +110,10 @@ get_eslint_errors() {
   printf "$date \n" >> "$REVIEWOUTPUT"
   printf "$time \n\n" >>  "$REVIEWOUTPUT"
 
-  printf "## Intro to Programming - JavaScript & jQuery \n\n" >> "$REVIEWOUTPUT"
+  printf "## Intermediate JavaScript - Test-Driven Development and Environments with JavaScript \n\n" >> "$REVIEWOUTPUT"
+
+  printf "❌: an X means a possible Resubmission Requirement if not addressed.\n" >> "$REVIEWOUTPUT"
+  printf "✅: a checkmark means you are doing great and on the right track!\n" >> "$REVIEWOUTPUT"
   
   printf "### Objectives Check \n" >> "$REVIEWOUTPUT"
   readme_exists >> "$REVIEWOUTPUT"
