@@ -82,6 +82,11 @@ get_eslint_errors() {
   fi;
 }
 
+run_jest() {
+  printf "\n - Check test coverage. Percent Lines should be 100. No lines should be uncovered. \n"
+  npx jest --coverage
+}
+
 # run_htmlhint() {
 #   printf "### HTML File Check \n"
 
@@ -113,11 +118,12 @@ get_eslint_errors() {
   printf "## Intermediate JavaScript - Test-Driven Development and Environments with JavaScript \n\n" >> "$REVIEWOUTPUT"
 
   printf "❌: an X means a possible Resubmission Requirement if not addressed.\n" >> "$REVIEWOUTPUT"
-  printf "✅: a checkmark means you are doing great and on the right track!\n" >> "$REVIEWOUTPUT"
+  printf "✅: a checkmark means you are doing great and on the right track!\n\n" >> "$REVIEWOUTPUT"
   
   printf "### Objectives Check \n" >> "$REVIEWOUTPUT"
   readme_exists >> "$REVIEWOUTPUT"
   get_eslint_errors >> "$REVIEWOUTPUT"
+  run_jest >> "$REVIEWOUTPUT"
 
   printf "\n" >> "$REVIEWOUTPUT"
   # run_htmlhint >> "$REVIEWOUTPUT"
