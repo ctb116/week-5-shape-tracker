@@ -75,7 +75,7 @@ get_eslint_errors() {
   lint=$(npx eslint ./src/js/triangle.js)
 
   if [ "$lint" == "" ] ; then
-    printf " - ✅ No eslint errors or warnings found."
+    printf " - ✅ No eslint errors or warnings found. \n"
   else
   printf " - ❌ eslint errors and/or warnings found. Please fix these:\n"
   printf "$lint"
@@ -83,8 +83,31 @@ get_eslint_errors() {
 }
 
 run_jest() {
-  printf "\n - Check test coverage. Percent Lines should be 100. No lines should be uncovered. \n"
+  printf " - Check test coverage. Percent Lines should be 100. No lines should be uncovered. \n"
   npx jest --coverage
+}
+
+check_gitignore() {
+    if [ -f .gitignore ]; then
+    printf " - ✅ .gitignore present! \n"
+    gitignore=./.gitignore
+    itemList=("node_modules/" "dist/" "coverage/")
+    not_in_gitignore=""
+    for item in "${itemList[@]}"
+    do
+      if ! grep -q "$item" "$gitignore"
+      then
+        not_in_gitignore+="$item  \n"
+      fi
+    done
+      if [ "$not_in_gitignore" ]; then
+        printf " - ❌ These items are missing from .gitignore: $not_in_gitignore \n"
+      else
+        printf " - ✅ .gitinore has all appropriate files and directories \n"
+      fi
+  else
+    printf " - ❌ No .gitignore file in the root directory found! \n"
+  fi
 }
 
 # run_htmlhint() {
@@ -123,6 +146,7 @@ run_jest() {
   printf "### Objectives Check \n" >> "$REVIEWOUTPUT"
   readme_exists >> "$REVIEWOUTPUT"
   get_eslint_errors >> "$REVIEWOUTPUT"
+  check_gitignore >> "$REVIEWOUTPUT"
   run_jest >> "$REVIEWOUTPUT"
 
   printf "\n" >> "$REVIEWOUTPUT"
