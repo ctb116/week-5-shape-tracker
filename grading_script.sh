@@ -8,9 +8,7 @@ check_commit_count() {
 
 check_commit_ts_diff() {
   printf "### Time between each commit: \n"
-  printf "Commit --> Previous Commit \n"
-  printf "date hour:minute:second --> date hour:minute:second  min:sec=  minutes:seconds \n\n"
-  printf "(ignore the first timestamp)"
+  printf "Previous Commit --> Commit \n"
 
   for ix in `git rev-list HEAD`; do 
     thists=`git log $ix -n 1 --format=%ct`; 
@@ -18,22 +16,44 @@ check_commit_ts_diff() {
     if [ ! -z "$prevts" ] ; then
       thisd=`date -d @$thists +'%d'`
       prevd=`date -d @$prevts +'%d'`
-      if (("$thisd" > "$prevd")) ; then
-        echo "DIFFERENT DAY"
-      else
-        delta=$(( $thists - $prevts )); 
-        echo `date -d @$thists +'%Y-%m-%d %H:%M:%S'` "-->"  \
-            `date -d @$prevts +'%Y-%m-%d %H:%M:%S'` " min:sec= " \
-            `date -d @$delta +'%M:%S'`;
+      if (("$thisd" != "$prevd")) ; then
+        echo `date -d @$prevts` "--> No more commits rest of day"
+      else 
+        # delta=$(( $thists - $prevts ));
+        date1=$(date -d @$prevts +'%s')
+        date2=$(date -d @$thists +'%s')
+        DIFF=$(($date2-$date1))
+        echo `date -d @$prevts` "-->"  \
+             `date -d @$thists` " diff= " \
+             "$(($DIFF / 3600 )) hours $((($DIFF % 3600) / 60)) minutes $(($DIFF % 60)) seconds";
       fi;
     fi; 
   done
   printf "\n"
 }
 
+# date1=$(date +"%s")
+# date2=$(date +"%s")
+# DIFF=$(($date2-$date1))
+# echo "Duration: $(($DIFF / 3600 )) hours $((($DIFF % 3600) / 60)) minutes $(($DIFF % 60)) seconds"
+
+# Wed 13 Apr 2022 05:41:01 PM PDT --> Wed 13 Apr 2022 06:00:24 PM PDT  min:sec=  16:19:23
+# Wed 13 Apr 2022 01:26:53 PM PDT --> Wed 13 Apr 2022 05:41:01 PM PDT  min:sec=  20:14:08
+# Wed 13 Apr 2022 12:50:53 PM PDT --> Wed 13 Apr 2022 01:26:53 PM PDT  min:sec=  16:36:00
+# Wed 13 Apr 2022 11:20:16 AM PDT --> Wed 13 Apr 2022 12:50:53 PM PDT  min:sec=  17:30:37
+# DIFFERENT DAY
+# Wed 04 Aug 2021 05:06:19 PM PDT --> Wed 13 Apr 2022 11:20:16 AM PDT  min:sec=  11:13:57
+# DIFFERENT DAY
+# Mon 12 Jul 2021 11:32:17 AM PDT --> Wed 04 Aug 2021 05:06:19 PM PDT  min:sec=  21:34:02
+# Mon 12 Jul 2021 11:32:06 AM PDT --> Mon 12 Jul 2021 11:32:17 AM PDT  min:sec=  16:00:11
+# DIFFERENT DAY
+# Wed 22 Jul 2020 04:33:39 PM PDT --> Mon 12 Jul 2021 11:32:06 AM PDT  min:sec=  10:58:27
+# Wed 22 Jul 2020 02:58:20 PM PDT --> Wed 22 Jul 2020 04:33:39 PM PDT  min:sec=  17:35:19
+# Wed 22 Jul 2020 02:09:07 PM PDT --> Wed 22 Jul 2020 02:58:20 PM PDT  min:sec=  16:49:13
+
 check_commit_history() {
   printf "### Commit History:\n"
-  git log HEAD |grep --line-buffered "Date"
+  git log -s --oneline
 }
 
 check_main_exists() {
@@ -83,7 +103,7 @@ get_eslint_errors() {
 }
 
 run_jest() {
-  printf " - Check test coverage. Percent Lines should be 100. No lines should be uncovered. \n"
+  printf " - ▢ Check test coverage. Percent Lines should be 100. No lines should be uncovered. \n"
   npx jest --coverage
 }
 
@@ -109,6 +129,7 @@ check_gitignore() {
     printf " - ❌ No .gitignore file in the root directory found! \n"
   fi
 }
+
 
 # run_htmlhint() {
 #   printf "### HTML File Check \n"
@@ -140,13 +161,17 @@ check_gitignore() {
 
   printf "## Intermediate JavaScript - Test-Driven Development and Environments with JavaScript \n\n" >> "$REVIEWOUTPUT"
 
-  printf "❌: an X means a possible Resubmission Requirement if not addressed.\n" >> "$REVIEWOUTPUT"
-  printf "✅: a checkmark means you are doing great and on the right track!\n\n" >> "$REVIEWOUTPUT"
-  
   printf "### Objectives Check \n" >> "$REVIEWOUTPUT"
+  printf "This is a list of items the grading script is checking for you. \n" >> "$REVIEWOUTPUT"
+  printf "❌: an X means the grading script found an issue that should be addressed. \n" >> "$REVIEWOUTPUT"
+  printf "✅: a checkmark the grading script has found no issue. \n\n" >> "$REVIEWOUTPUT" 
   readme_exists >> "$REVIEWOUTPUT"
   get_eslint_errors >> "$REVIEWOUTPUT"
   check_gitignore >> "$REVIEWOUTPUT"
+  printf "\n\n" >>  "$REVIEWOUTPUT"
+
+  printf "### Checklist to Review \n" >> "$REVIEWOUTPUT"
+  printf "This is a list of things that the grading script can't check for you. Please review this list before turning in your project. \n" >> "$REVIEWOUTPUT"
   run_jest >> "$REVIEWOUTPUT"
 
   printf "\n" >> "$REVIEWOUTPUT"
