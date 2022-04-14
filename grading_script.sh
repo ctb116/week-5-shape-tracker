@@ -1,5 +1,11 @@
 #! /bin/bash
 
+# INSTRUCTIONS
+# copy/paste this file to the root directory of your project
+# in terminal run, chmod +x ./grading_script.sh
+# to run gradining script, in terminal type ./grading_script.sh
+# a review.md file will be created
+
 check_commit_count() {
   printf "### Total Commits: "
   git rev-list --count HEAD | tail -1
@@ -31,25 +37,6 @@ check_commit_ts_diff() {
   done
   printf "\n"
 }
-
-# date1=$(date +"%s")
-# date2=$(date +"%s")
-# DIFF=$(($date2-$date1))
-# echo "Duration: $(($DIFF / 3600 )) hours $((($DIFF % 3600) / 60)) minutes $(($DIFF % 60)) seconds"
-
-# Wed 13 Apr 2022 05:41:01 PM PDT --> Wed 13 Apr 2022 06:00:24 PM PDT  min:sec=  16:19:23
-# Wed 13 Apr 2022 01:26:53 PM PDT --> Wed 13 Apr 2022 05:41:01 PM PDT  min:sec=  20:14:08
-# Wed 13 Apr 2022 12:50:53 PM PDT --> Wed 13 Apr 2022 01:26:53 PM PDT  min:sec=  16:36:00
-# Wed 13 Apr 2022 11:20:16 AM PDT --> Wed 13 Apr 2022 12:50:53 PM PDT  min:sec=  17:30:37
-# DIFFERENT DAY
-# Wed 04 Aug 2021 05:06:19 PM PDT --> Wed 13 Apr 2022 11:20:16 AM PDT  min:sec=  11:13:57
-# DIFFERENT DAY
-# Mon 12 Jul 2021 11:32:17 AM PDT --> Wed 04 Aug 2021 05:06:19 PM PDT  min:sec=  21:34:02
-# Mon 12 Jul 2021 11:32:06 AM PDT --> Mon 12 Jul 2021 11:32:17 AM PDT  min:sec=  16:00:11
-# DIFFERENT DAY
-# Wed 22 Jul 2020 04:33:39 PM PDT --> Mon 12 Jul 2021 11:32:06 AM PDT  min:sec=  10:58:27
-# Wed 22 Jul 2020 02:58:20 PM PDT --> Wed 22 Jul 2020 04:33:39 PM PDT  min:sec=  17:35:19
-# Wed 22 Jul 2020 02:09:07 PM PDT --> Wed 22 Jul 2020 02:58:20 PM PDT  min:sec=  16:49:13
 
 check_commit_history() {
   printf "### Commit History:\n"
